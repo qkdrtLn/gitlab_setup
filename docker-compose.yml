@@ -3,7 +3,7 @@ services:
     image: gitlab/gitlab-ce:18.5.0-ce.0
     container_name: gitlab
     restart: always
-    hostname: 'gitlab.example.com'
+    hostname: 'gitlab.nikitaserkin.pp.ua'
     ports:
       - "22:22"
       - "80:80"
@@ -24,7 +24,7 @@ services:
     image: gitlab/gitlab-runner:alpine
     deploy:
       mode: replicated
-      replicas: 4
+      replicas: 1
 configs:
   gitlab:
     file: ./gitlab.rb
