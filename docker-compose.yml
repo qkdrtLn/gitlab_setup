@@ -1,0 +1,35 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:18.5.0-ce.0
+    container_name: gitlab
+    restart: always
+    hostname: 'gitlab.example.com'
+    ports:
+      - "22:22"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - gitlab_volume/data:/var/opt/gitlab
+      - gitlab_volume/logs:/var/log/gitlab
+      - gitlab_volume/config:/etc/gitlab
+    shm_size: '256m'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: "from_file('/omnibus_config.rb')"
+    configs:
+      - source: gitlab
+        target: /omnibus_config.rb
+    secrets:
+      - gitlab_root_password
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    deploy:
+      mode: replicated
+      replicas: 4
+configs:
+  gitlab:
+    file: ./gitlab.rb
+secrets:
+  gitlab_root_password:
+    file: ./root_password.txt
+volumes:
+  gitlab_volume:     
