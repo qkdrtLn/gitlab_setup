@@ -9,9 +9,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - gitlab_volume/data:/var/opt/gitlab
-      - gitlab_volume/logs:/var/log/gitlab
-      - gitlab_volume/config:/etc/gitlab
+      - gitlab_volume:/var/opt/gitlab
+      - gitlab_volume:/var/log/gitlab
+      - gitlab_volume:/etc/gitlab
     shm_size: '256m'
     environment:
       GITLAB_OMNIBUS_CONFIG: "from_file('/omnibus_config.rb')"
