@@ -39,8 +39,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-      # - ./postgres_data:/var/lib/postgresql/data/
-    env_file: .env  
+      # - ./postgres_data:/var/lib/postgresql/data/ 
     environment:
       POSTGRES_DB: gitlab
       POSTGRES_USER: gitlab
