@@ -8,24 +8,24 @@ services:
      # - "22:22"
       - "80:80"
       - "443:443"
-    variables:
-      POSTGRES_HOST: postgres
-      POSTGRES_DB: gitlab
-      POSTGRES_USER: gitlab
-      POSTGRES_PASSWORD: gitlab
-      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - gitlab_volume:/var/opt/gitlab
       - gitlab_volume:/var/log/gitlab
       - gitlab_volume:/etc/gitlab
     shm_size: '256m'
     environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: gitlab
+      POSTGRES_USER: gitlab
+      POSTGRES_PASSWORD: gitlab
+      POSTGRES_HOST_AUTH_METHOD: trust
       GITLAB_OMNIBUS_CONFIG: "from_file('/omnibus_config.rb')"
     configs:
       - source: gitlab
         target: /omnibus_config.rb
     secrets:
       - gitlab_root_password
+      
 
   # gitlab-runner:
   #   image: gitlab/gitlab-runner:alpine
@@ -41,7 +41,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
       # - ./postgres_data:/var/lib/postgresql/data/
     env_file: .env  
-    variables:
+    environment:
       POSTGRES_DB: gitlab
       POSTGRES_USER: gitlab
       POSTGRES_PASSWORD: gitlab
