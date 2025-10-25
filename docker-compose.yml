@@ -20,11 +20,22 @@ services:
         target: /omnibus_config.rb
     secrets:
       - gitlab_root_password
-  gitlab-runner:
-    image: gitlab/gitlab-runner:alpine
-    deploy:
-      mode: replicated
-      replicas: 1
+
+  # gitlab-runner:
+  #   image: gitlab/gitlab-runner:alpine
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+
+  postgres:
+    image: postgres:latest
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      # - ./postgres_data:/var/lib/postgresql/data/
+    env_file: .env  
+  
 configs:
   gitlab:
     file: ./gitlab.rb
