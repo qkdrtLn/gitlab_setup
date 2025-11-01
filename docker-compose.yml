@@ -33,7 +33,7 @@ services:
       # - "22:22"   # включите, если хотите Git SSH через Traefik TCP
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - traefik_letsencrypt:/letsencrypt
+      - ./letsencrypt:/letsencrypt
 
   gitlab:
     image: gitlab/gitlab-ce:18.5.0-ce.0
