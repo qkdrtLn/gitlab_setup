@@ -33,8 +33,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock 
       - /srv/gitlab-runner/config:/etc/gitlab-runner
     environment:
-      GITLAB_RUNNER_IMAGE_TYPE=gitlab-runner 
-      GITLAB_RUNNER_IMAGE_TAG=alpine-v17.9.1 
+      GITLAB_RUNNER_IMAGE_TYPE: gitlab-runner 
+      GITLAB_RUNNER_IMAGE_TAG: alpine-v17.9.1 
  
     deploy:
       mode: replicated
