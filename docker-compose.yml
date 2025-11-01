@@ -27,10 +27,10 @@ services:
       - --accesslog=true
       - --log.level=INFO
 
-    ports:
-      - "80:80"
-      - "443:443"
-      # - "22:22"   # включите, если хотите Git SSH через Traefik TCP
+    expose:
+      - 80
+      - 443
+      # - 22   # включите, если хотите Git SSH через Traefik TCP
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./letsencrypt:/letsencrypt
