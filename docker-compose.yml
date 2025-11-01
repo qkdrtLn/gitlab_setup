@@ -1,13 +1,49 @@
 services:
+  traefik:
+    image: traefik:v3.1
+    container_name: traefik
+    restart: always
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+
+      # entrypoints
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      # опционально, если хотите прокидывать SSH через Traefik TCP
+      - --entrypoints.ssh.address=:22
+
+      # http->https redirect
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+
+      # ACME / Let's Encrypt
+      - --certificatesresolvers.letsencrypt.acme.email=you@example.com     # <-- ваш email
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+
+      # Логи (по желанию)
+      - --accesslog=true
+      - --log.level=INFO
+
+    ports:
+      - "80:80"
+      - "443:443"
+      # - "22:22"   # включите, если хотите Git SSH через Traefik TCP
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_letsencrypt:/letsencrypt
+
   gitlab:
     image: gitlab/gitlab-ce:18.5.0-ce.0
     container_name: gitlab
     restart: always
     hostname: 'gitlab.nikitaserkin.pp.ua'
-    ports:
-     # - "22:22"
-      - "80:80"
-      - "443:443"
+    # ports:
+    #   - "22:22"
+    #   - "80:80"
+    #   - "443:443"
     volumes:
       - gitlab_config:/etc/gitlab
       - gitlab_logs:/var/log/gitlab
@@ -25,6 +61,30 @@ services:
         target: /omnibus_config.rb
     secrets:
       - gitlab_root_password
+    labels:
+      - traefik.enable=true
+
+      # HTTP(S) роутер
+      - traefik.http.routers.gitlab.rule=Host(`gitlab.nikitaserkin.pp.ua`)
+      - traefik.http.routers.gitlab.entrypoints=websecure
+      - traefik.http.routers.gitlab.tls.certresolver=letsencrypt
+
+      # Сервис и порт бэкенда в контейнере GitLab (внутренний nginx слушает 80)
+      - traefik.http.services.gitlab.loadbalancer.server.port=80
+
+      # Длинные таймауты для пушей/клонирования через HTTP(S)
+      - traefik.http.services.gitlab.loadbalancer.server.scheme=http
+      - traefik.http.services.gitlab.loadbalancer.passhostheader=true
+
+      # Проброс необходимых заголовков (подстраховка)
+      - traefik.http.middlewares.gitlab-headers.headers.customrequestheaders.X-Forwarded-Proto=https
+      - traefik.http.routers.gitlab.middlewares=gitlab-headers
+
+      # --- Опционально: Git SSH через Traefik TCP (если нужно) ---
+      # - traefik.tcp.routers.gitlab-ssh.rule=HostSNI(`*`)
+      # - traefik.tcp.routers.gitlab-ssh.entrypoints=ssh
+      # - traefik.tcp.services.gitlab-ssh.loadbalancer.server.port=22
+      # ------------------------------------------------------------  
       
 
   gitlab-runner:
