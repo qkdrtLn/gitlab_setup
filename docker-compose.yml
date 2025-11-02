@@ -39,7 +39,6 @@ services:
     image: gitlab/gitlab-ce:18.5.0-ce.0
     container_name: gitlab
     restart: always
-    hostname: 'gitlab.nikitaserkin.pp.ua'
     # ports:
     #   - "22:22"
     #   - "80:80"
