@@ -73,10 +73,10 @@ services:
       - traefik.http.routers.gitlab.tls.certresolver=letsencrypt
 
       # Сервис и порт бэкенда в контейнере GitLab (внутренний nginx слушает 80)
-      - traefik.http.services.gitlab.loadbalancer.server.port=443
+      - traefik.http.services.gitlab.loadbalancer.server.port=80
 
       # Длинные таймауты для пушей/клонирования через HTTP(S)
-      - traefik.http.services.gitlab.loadbalancer.server.scheme=https
+      - traefik.http.services.gitlab.loadbalancer.server.scheme=http
       - traefik.http.services.gitlab.loadbalancer.passhostheader=true
 
       # Проброс необходимых заголовков (подстраховка)
