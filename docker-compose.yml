@@ -27,10 +27,10 @@ services:
       - --accesslog=true
       - --log.level=INFO
 
-    expose:
-      - 80
-      - 443
-      # - 22   # включите, если хотите Git SSH через Traefik TCP
+    ports:
+      - "80:80"
+      - "443:443"
+      # - "22:22"   # включите, если хотите Git SSH через Traefik TCP
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./letsencrypt:/letsencrypt
@@ -61,6 +61,9 @@ services:
         target: /omnibus_config.rb
     secrets:
       - gitlab_root_password
+    expose:
+      - 80
+      - 443
     labels:
       - traefik.enable=true
 
@@ -85,6 +88,7 @@ services:
       # - traefik.tcp.routers.gitlab-ssh.entrypoints=ssh
       # - traefik.tcp.services.gitlab-ssh.loadbalancer.server.port=22
       # ------------------------------------------------------------  
+
       
 
   gitlab-runner:
