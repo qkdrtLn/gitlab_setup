@@ -18,7 +18,7 @@ services:
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
 
       # ACME / Let's Encrypt
-      - --certificatesresolvers.letsencrypt.acme.email=you@example.com     # <-- ваш email
+      - --certificatesresolvers.letsencrypt.acme.email=mykyta31sie@gmail.com     # <-- ваш email
       - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
